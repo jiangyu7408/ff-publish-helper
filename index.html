@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Family Farm Publish</title>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+<div id="app">
+    <h1>{{ greeting }}</h1>
+    To learn more about Vue, visit
+    <a :href="docsURL" target="_blank"> {{ humanizeURL(docsURL) }} </a>
+</div>
+<div id="app-3">
+    <p v-if="seen">Now you see me</p>
+</div>
+<div id="app-4">
+    <ol>
+        <li v-for="todo in todoArray">
+            {{ todo.text }}
+        </li>
+    </ol>
+</div>
+<div id="app-5">
+    <p>{{ message }}</p>
+    <button v-on:click="reverseMessage">Reverse Message</button>
+</div>
+<script>
+    var app1 = new Vue({
+        el: '#app',
+        data: {
+            greeting: 'Family Farm Publish app!',
+            docsURL: 'https://apps.facebook.com/farm_test_jy/',
+        },
+        methods: {
+            humanizeURL: function(url) {
+                return url;
+            }
+        }
+    });
+    var app3 = new Vue({
+        el: '#app-3',
+        data: {
+            seen: true
+        }
+    });
+    var app4 = new Vue({
+        el: '#app-4',
+        data: {
+            todoArray: [
+                {text: 'Learn JavaScript'},
+                {text: 'Learn Vue'},
+                {text: 'Build something awesome'}
+            ]
+        }
+    });
+    var app5 = new Vue({
+        el: '#app-5',
+        data: {
+            message: 'Hello Vue.js!'
+        },
+        methods: {
+            reverseMessage: function() {
+                this.message = this.message.split('').reverse().join('')
+            }
+        }
+    })
+</script>
+</body>
+</html>
