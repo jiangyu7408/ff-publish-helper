@@ -69,7 +69,6 @@ exports.getResult = function(lockFilePath, logFilePath) {
 exports.listCoreFiles = function(baseDir) {
     const watchList = [
         'public/jsondata/facebook/en_US/en_US.config',
-        'public/jsondata/facebook/en_US/en_US.config_z'
     ];
     return watchList.map(function(file) {
         var fullPath = baseDir + "/" + file;

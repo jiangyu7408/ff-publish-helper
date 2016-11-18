@@ -46,10 +46,12 @@ app.get('/dev3/cdn/progress', function(req, res) {
     invoke.showProgress(res);
 });
 app.get('/dev3/cdn/result', function(req, res) {
-    // var clientId = req._remoteAddress.replace('::ffff:', '');
-    // invoke.showResult('/tmp/dev3.cdn.lock', clientId, res);
     var result = invoke.getResult('/tmp/dev3.cdn.lock', '/data2/compile_work_dir/dev3/jobs');
     res.send(result);
+});
+app.get('/dev3/cdn/files', function(req, res) {
+    var files = invoke.listCoreFiles('/mnt/htdocs/dev3/farm');
+    res.send(JSON.stringify(files));
 });
 app.use(function(req, res, next) {
     res.status(404).send('Sorry cant find that!' + `${req}`);

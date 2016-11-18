@@ -4,67 +4,116 @@
     <title>Family Farm Publish</title>
     <script src="https://unpkg.com/vue/dist/vue.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link href='//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600|Roboto Mono' rel='stylesheet'
+          type='text/css'>
+    <link rel="stylesheet" href="/publish.css">
 </head>
 <body>
 <div id="app">
     <h1>{{ greeting }}</h1>
     To learn more about Vue, visit
-    <a :href="docsURL" target="_blank"> {{ humanizeURL(docsURL) }} </a>
+    <a :href="docsURL" target="_blank"> {{ docsURL }} </a>
 </div>
-<div id="app-3">
-    <p v-if="seen">Now you see me</p>
-</div>
-<div id="app-4">
-    <ol>
-        <li v-for="todo in todoArray">
-            {{ todo.text }}
-        </li>
-    </ol>
-</div>
-<div id="app-5">
+<div id="dev3-compile">
+    <button v-on:click="invokeCompile">compile</button>
+    <button v-on:click="showProgress">show progress</button>
+    <button v-on:click="showResult">show result</button>
+    <button v-on:click="listFiles">list core files</button>
     <p>{{ message }}</p>
-    <button v-on:click="reverseMessage">Reverse Message</button>
+    <table class="highlight">
+        <tr v-for="file in files">
+            <td>
+                <pre class="shebang">{{ file.path }}</pre>
+            </td>
+            <td>
+                <pre>{{ file.size }}</pre>
+            </td>
+        </tr>
+    </table>
+    <table class="highlight">
+        <tr v-for="file in progress">
+            <td>
+                <pre>{{ file }}</pre>
+            </td>
+        </tr>
+    </table>
+    <table class="highlight">
+        <tr v-for="line in result">
+            <td>
+                <pre>{{ line }}</pre>
+            </td>
+        </tr>
+    </table>
 </div>
 <script>
-    var app1 = new Vue({
+    new Vue({
         el: '#app',
         data: {
             greeting: 'Family Farm Publish app!',
             docsURL: 'https://apps.facebook.com/farm_test_jy/',
+        }
+    });
+    var compileObject = {
+        el: '#dev3-compile',
+        data: {
+            message: 'compile dev3',
+            progress: [],
+            result: [],
+            files: []
         },
         methods: {
-            humanizeURL: function(url) {
-                return url;
+            invokeCompile: function() {
+                axios.get('http://10.0.64.56:3000/dev3/cdn', {timeout: 1000})
+                    .then(function(res) {
+                        compileObject.data.message = res.data;
+                    })
+                    .catch(function(error) {
+                        compileObject.data.message = `${error}`;
+                    });
+            },
+            showProgress: function() {
+                axios.get('http://10.0.64.56:3000/dev3/cdn/progress', {timeout: 1000})
+                    .then(function(res) {
+                        compileObject.data.progress = [];
+                        res.data.forEach(function(line) {
+                            compileObject.data.progress.push(line);
+                        });
+                    })
+                    .catch(function(error) {
+                        compileObject.data.progress = `${error}`;
+                    });
+            },
+            showResult: function() {
+                axios.get('http://10.0.64.56:3000/dev3/cdn/result', {timeout: 1000})
+                    .then(function(res) {
+                        compileObject.data.result = [];
+                        ['cdn', 'preCompile', 'compile'].map(
+                            function(node) {
+                                res.data[node].forEach(function(line) {
+                                    compileObject.data.result.push(line);
+                                });
+                            }
+                        );
+                    })
+                    .catch(function(error) {
+                        compileObject.data.result = `${error}`;
+                    });
+            },
+            listFiles: function() {
+                axios.get('http://10.0.64.56:3000/dev3/cdn/files', {timeout: 1000})
+                    .then(function(res) {
+                        compileObject.data.files = [];
+                        res.data.forEach(function(line) {
+                            compileObject.data.files.push(line);
+                        });
+                    })
+                    .catch(function(error) {
+                        compileObject.data.files = `${error}`;
+                    });
             }
         }
-    });
-    var app3 = new Vue({
-        el: '#app-3',
-        data: {
-            seen: true
-        }
-    });
-    var app4 = new Vue({
-        el: '#app-4',
-        data: {
-            todoArray: [
-                {text: 'Learn JavaScript'},
-                {text: 'Learn Vue'},
-                {text: 'Build something awesome'}
-            ]
-        }
-    });
-    var app5 = new Vue({
-        el: '#app-5',
-        data: {
-            message: 'Hello Vue.js!'
-        },
-        methods: {
-            reverseMessage: function() {
-                this.message = this.message.split('').reverse().join('')
-            }
-        }
-    })
+    };
+    var compile = new Vue(compileObject);
 </script>
 </body>
 </html>
